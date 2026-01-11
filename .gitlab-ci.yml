@@ -1,0 +1,42 @@
+stages:
+  - test
+  - build
+
+image: python
+
+before_script:
+  - pip install -r requirements.txt
+
+test:
+  stage: test
+  script:
+    - python tests.py
+
+build:
+  stage: build
+  script:
+    - python run_automatic_smaller.py >> output_smaller.txt
+    - python run_automatic_gameplay.py >> output.txt
+    - python run_2_choices_automatic_build.py >> output_2choices.txt
+    - python run_testing_automatic_smaller.py >> output_test.txt
+    - grep "Choice:" output.txt
+    - grep "Choice:" output_smaller.txt
+    - grep "Choice:" output_test.txt
+    - grep "Choice 1:" output_2choices.txt
+    - grep "Choice 2:" output_2choices.txt
+    - grep "Dimensions of the matrix:" output.txt
+    - grep "Dimensions of the matrix:" output_smaller.txt
+    - grep "Dimensions of the matrix:" output_2choices.txt
+    - grep "The coordinates of the cells:" output.txt
+    - grep "The coordinates of the cells:" output_smaller.txt
+    - grep "The coordinates of the cells:" output_2choices.txt
+    - grep "Game over." output.txt
+    - grep "Game over." output_smaller.txt
+    - grep "Game over." output_2choices.txt
+    - grep "You have played" output_test.txt
+    - grep "Dimensions of the grid:" output_test.txt
+    - grep "1 won" output_test.txt
+    - grep "2 won" output_test.txt
+    - grep "There were" output_test.txt
+    - grep "draws" output_test.txt
+    - grep "That is" output_test.txt
